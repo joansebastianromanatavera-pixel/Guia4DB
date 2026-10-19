@@ -1,0 +1,22 @@
+ACTIVIDAD 3 - CÓMO EL PREPARED STATEMENT PROTEGE CONTRA LA INYECCIÓN SQL
+
+ANTES (1_Vulnerable_ANTES.py)
+La consulta se arma pegando el dato del usuario dentro del texto SQL. El motor no
+distingue código de dato, así que:
+  - Caso 1: 1031422990' OR '1'='1  -> la condición siempre es verdadera y devuelve
+    los 5 estudiantes en vez de 1.
+  - Caso 2: 1031422990 OR 1=1 --   -> el "--" comenta el filtro AND IdMatricula y
+    devuelve las 13 matrículas.
+
+DESPUÉS (2_Segura_DESPUES.py)
+La consulta lleva marcadores %s y el dato se envía por separado. Con prepared=True
+el servidor compila primero la estructura de la consulta y después recibe los
+valores, que solo pueden ser DATOS, nunca código. Resultado:
+  - Caso 1: el OR no se ejecuta. Puede aparecer 1 fila porque MySQL convierte la
+    cadena a número tomando sus dígitos iniciales (1031422990), pero la tabla
+    completa ya no queda expuesta.
+  - Caso 2: 0 filas. El AND IdMatricula se mantiene.
+
+SEGUNDA LÍNEA DE DEFENSA
+Antes de consultar se valida la entrada por lista blanca (solo dígitos, de 6 a 10).
+Los dos ataques se rechazan sin llegar a la base de datos (OWASP, 2023).
