@@ -1,46 +1,46 @@
 -- 05 · Actividad 2: roles corporativos (privilegio HEREDADO)
 -- Ejecutar como root, después de 03_Usuarios_Privilegios.sql.
 
-USE Guia_3;
+USE Guia_4;
 
 -- 1. Crear los 3 roles
 CREATE ROLE IF NOT EXISTS 'rol_admin', 'rol_consultor', 'rol_operador';
 
 -- 2. Permisos de cada rol (mismos perfiles de la Actividad 1)
-GRANT ALL PRIVILEGES ON Guia_3.* TO 'rol_admin' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON Guia_4.* TO 'rol_admin' WITH GRANT OPTION;
 
-GRANT SELECT ON Guia_3.Programa   TO 'rol_consultor';
-GRANT SELECT ON Guia_3.Estudiante TO 'rol_consultor';
-GRANT SELECT ON Guia_3.Profesor   TO 'rol_consultor';
-GRANT SELECT ON Guia_3.Materia    TO 'rol_consultor';
-GRANT SELECT ON Guia_3.Grupo      TO 'rol_consultor';
-GRANT SELECT ON Guia_3.Matricula  TO 'rol_consultor';
+GRANT SELECT ON Guia_4.Programa   TO 'rol_consultor';
+GRANT SELECT ON Guia_4.Estudiante TO 'rol_consultor';
+GRANT SELECT ON Guia_4.Profesor   TO 'rol_consultor';
+GRANT SELECT ON Guia_4.Materia    TO 'rol_consultor';
+GRANT SELECT ON Guia_4.Grupo      TO 'rol_consultor';
+GRANT SELECT ON Guia_4.Matricula  TO 'rol_consultor';
 
-GRANT SELECT, INSERT, UPDATE ON Guia_3.Programa   TO 'rol_operador';
-GRANT SELECT, INSERT, UPDATE ON Guia_3.Estudiante TO 'rol_operador';
-GRANT SELECT, INSERT, UPDATE ON Guia_3.Profesor   TO 'rol_operador';
-GRANT SELECT, INSERT, UPDATE ON Guia_3.Materia    TO 'rol_operador';
-GRANT SELECT, INSERT, UPDATE ON Guia_3.Grupo      TO 'rol_operador';
-GRANT SELECT, INSERT, UPDATE ON Guia_3.Matricula  TO 'rol_operador';
+GRANT SELECT, INSERT, UPDATE ON Guia_4.Programa   TO 'rol_operador';
+GRANT SELECT, INSERT, UPDATE ON Guia_4.Estudiante TO 'rol_operador';
+GRANT SELECT, INSERT, UPDATE ON Guia_4.Profesor   TO 'rol_operador';
+GRANT SELECT, INSERT, UPDATE ON Guia_4.Materia    TO 'rol_operador';
+GRANT SELECT, INSERT, UPDATE ON Guia_4.Grupo      TO 'rol_operador';
+GRANT SELECT, INSERT, UPDATE ON Guia_4.Matricula  TO 'rol_operador';
 
 -- 3. Se quitan los privilegios DIRECTOS de la Actividad 1 para que los
 --    permisos lleguen SOLO por el rol. auditor conserva el suyo a propósito
 --    (sirve de contraste: directo vs heredado)
 REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'admin_bd'@'localhost';
 
-REVOKE SELECT ON Guia_3.Programa   FROM 'analista'@'localhost';
-REVOKE SELECT ON Guia_3.Estudiante FROM 'analista'@'localhost';
-REVOKE SELECT ON Guia_3.Profesor   FROM 'analista'@'localhost';
-REVOKE SELECT ON Guia_3.Materia    FROM 'analista'@'localhost';
-REVOKE SELECT ON Guia_3.Grupo      FROM 'analista'@'localhost';
-REVOKE SELECT ON Guia_3.Matricula  FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Programa   FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Estudiante FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Profesor   FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Materia    FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Grupo      FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Matricula  FROM 'analista'@'localhost';
 
-REVOKE SELECT, INSERT, UPDATE ON Guia_3.Programa   FROM 'operador'@'localhost';
-REVOKE SELECT, INSERT, UPDATE ON Guia_3.Estudiante FROM 'operador'@'localhost';
-REVOKE SELECT, INSERT, UPDATE ON Guia_3.Profesor   FROM 'operador'@'localhost';
-REVOKE SELECT, INSERT, UPDATE ON Guia_3.Materia    FROM 'operador'@'localhost';
-REVOKE SELECT, INSERT, UPDATE ON Guia_3.Grupo      FROM 'operador'@'localhost';
-REVOKE SELECT, INSERT, UPDATE ON Guia_3.Matricula  FROM 'operador'@'localhost';
+REVOKE SELECT, INSERT, UPDATE ON Guia_4.Programa   FROM 'operador'@'localhost';
+REVOKE SELECT, INSERT, UPDATE ON Guia_4.Estudiante FROM 'operador'@'localhost';
+REVOKE SELECT, INSERT, UPDATE ON Guia_4.Profesor   FROM 'operador'@'localhost';
+REVOKE SELECT, INSERT, UPDATE ON Guia_4.Materia    FROM 'operador'@'localhost';
+REVOKE SELECT, INSERT, UPDATE ON Guia_4.Grupo      FROM 'operador'@'localhost';
+REVOKE SELECT, INSERT, UPDATE ON Guia_4.Matricula  FROM 'operador'@'localhost';
 
 -- 4. Asignar cada rol a su usuario
 GRANT 'rol_admin'     TO 'admin_bd'@'localhost';
@@ -64,5 +64,5 @@ SHOW GRANTS FOR 'operador'@'localhost';
 SHOW GRANTS FOR 'operador'@'localhost' USING 'rol_operador';
 
 -- 7. Un REVOKE sobre el rol afecta a TODOS sus usuarios a la vez
-REVOKE INSERT ON Guia_3.Programa FROM 'rol_operador';           -- operador ya no inserta en Programa
-GRANT  INSERT ON Guia_3.Programa TO 'rol_operador';             -- se restaura
+REVOKE INSERT ON Guia_4.Programa FROM 'rol_operador';           -- operador ya no inserta en Programa
+GRANT  INSERT ON Guia_4.Programa TO 'rol_operador';             -- se restaura

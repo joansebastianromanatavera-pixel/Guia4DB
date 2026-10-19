@@ -1,7 +1,7 @@
 # Tarea previa — Aula invertida (Guía 4)
 
 **Universidad Manuela Beltrán · Teoría de Bases de Datos · Guía de Laboratorio N.º 4**
-**Sistema:** `Guia_3` (sistema académico de las Prácticas 1-3) · **SGBD:** MySQL 8
+**Sistema:** `Guia_4` (sistema académico de las Prácticas 1-3) · **SGBD:** MySQL 8
 
 **Integrantes:** Juan Manuel Gámez Nieto · Esteban Salvador Guzmán · Joan Sebastián Romaña Tavera
 
@@ -20,13 +20,13 @@
 **Ejemplo de GRANT** — el analista puede consultar estudiantes:
 
 ```sql
-GRANT SELECT ON Guia_3.Estudiante TO 'analista'@'localhost';
+GRANT SELECT ON Guia_4.Estudiante TO 'analista'@'localhost';
 ```
 
 **Ejemplo de REVOKE** — el analista deja de poder consultarlos:
 
 ```sql
-REVOKE SELECT ON Guia_3.Estudiante FROM 'analista'@'localhost';
+REVOKE SELECT ON Guia_4.Estudiante FROM 'analista'@'localhost';
 ```
 
 Los 5 ejemplos completos están en [`Scripts/07_GRANT_vs_REVOKE.sql`](Scripts/07_GRANT_vs_REVOKE.sql) y sus resultados en `Capturas/`.
@@ -43,13 +43,13 @@ Los 5 ejemplos completos están en [`Scripts/07_GRANT_vs_REVOKE.sql`](Scripts/07
 
 ---
 
-## Punto 3 — Diseño de roles del sistema `Guia_3`
+## Punto 3 — Diseño de roles del sistema `Guia_4`
 
 ### Perfiles
 
 | Perfil | Rol MySQL | Usuario | Función | Puede | No puede |
 |---|---|---|---|---|---|
-| **Administrador** | `rol_admin` | `admin_bd` | DBA: administra el esquema y los permisos | Todo sobre `Guia_3`, incluido otorgar permisos | — |
+| **Administrador** | `rol_admin` | `admin_bd` | DBA: administra el esquema y los permisos | Todo sobre `Guia_4`, incluido otorgar permisos | — |
 | **Consultor** | `rol_consultor` | `analista` | Consulta datos y genera reportes | `SELECT` en las 6 tablas | Insertar, modificar, borrar; ver el log |
 | **Operador** | `rol_operador` | `operador` | Registra y corrige datos del día a día | `SELECT`, `INSERT`, `UPDATE` en las 6 tablas | Borrar (`DELETE`); ver el log |
 | **Auditor** | *(sin rol, privilegio directo)* | `auditor` | Revisa quién cambió qué y cuándo | `SELECT` en `auditoria_log` | Ver o tocar datos de negocio |
@@ -73,7 +73,7 @@ S = SELECT · I = INSERT · U = UPDATE · D = DELETE · G = puede delegar (GRANT
 - **Mínimo privilegio:** cada perfil tiene solo lo que su función necesita.
 - **El operador no borra:** un error se corrige con `UPDATE`; un `DELETE` es irreversible.
 - **El auditor no ve datos de negocio** y nadie más que él (y el DBA) lee el log.
-- **Permisos tabla por tabla** para el consultor y el operador: un `Guia_3.*` incluiría `auditoria_log` sin querer.
+- **Permisos tabla por tabla** para el consultor y el operador: un `Guia_4.*` incluiría `auditoria_log` sin querer.
 
 ---
 

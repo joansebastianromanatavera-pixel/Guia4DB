@@ -1,7 +1,7 @@
 # Práctica 4 — Seguridad en Bases de Datos
 
 **UMB · Teoría de Bases de Datos · Guía N.º 4** — Usuarios · Privilegios · Roles · Auditoría
-**Sistema:** `Guia_3` (sistema académico de las Prácticas 1-3) · **SGBD:** MySQL 8
+**Sistema:** `Guia_4` (sistema académico de las Prácticas 1-3) · **SGBD:** MySQL 8
 
 ---
 
@@ -11,7 +11,7 @@
 
 | # | Script | Ejecutar como | Qué hace |
 |:-:|---|---|---|
-| 01 | `00_Preparacion/Scripts/01_Tablas.sql` | root | Crea `Guia_3` y sus 6 tablas |
+| 01 | `00_Preparacion/Scripts/01_Tablas.sql` | root | Crea `Guia_4` y sus 6 tablas |
 | 02 | `00_Preparacion/Scripts/02_Datos.sql` | root | Carga los datos de prueba |
 | 03 | `02_Actividad1_Usuarios_Privilegios/Scripts/03_Usuarios_Privilegios.sql` | root | 4 usuarios con privilegios directos + tabla `auditoria_log` |
 | 04 | `02_Actividad1_Usuarios_Privilegios/Scripts/04_Pruebas_Acceso.sql` | cada usuario, por bloques | Qué puede y qué no puede hacer cada uno |
@@ -51,7 +51,7 @@ source 02_Actividad1_Usuarios_Privilegios/Scripts/03_Usuarios_Privilegios.sql
 -- ... y así con los demás, en el orden de la tabla
 ```
 
-Para las pruebas de un usuario, abrir otra terminal con `-u analista -p Guia_3` en lugar de `-u root -p`. Se usa `source` porque PowerShell no acepta `< archivo.sql`.
+Para las pruebas de un usuario, abrir otra terminal con `-u analista -p Guia_4` en lugar de `-u root -p`. Se usa `source` porque PowerShell no acepta `< archivo.sql`.
 
 **Python (Actividad 3)**
 
@@ -95,7 +95,7 @@ source /guia4/02_Actividad1_Usuarios_Privilegios/Scripts/03_Usuarios_Privilegios
 Pruebas de un usuario, en otra terminal:
 
 ```bash
-sudo docker exec -it mysql-guia4 mysql -u analista -p Guia_3
+sudo docker exec -it mysql-guia4 mysql -u analista -p Guia_4
 ```
 
 > Entrar **siempre con `docker exec`**: los usuarios son `@'localhost'` y, desde fuera del contenedor (DBeaver, etc.), MySQL los ve llegar desde la red de Docker y no los deja entrar. Root sí funciona desde fuera.
@@ -122,7 +122,7 @@ sudo docker rm -f mysql-guia4     # borrarlo por completo
 ### Empezar de cero (cualquier sistema, como root)
 
 ```sql
-DROP DATABASE IF EXISTS Guia_3;
+DROP DATABASE IF EXISTS Guia_4;
 DROP USER IF EXISTS admin_bd@localhost, analista@localhost, operador@localhost, auditor@localhost;
 DROP ROLE IF EXISTS rol_admin, rol_consultor, rol_operador;
 ```
@@ -180,7 +180,7 @@ GRANT otorga un privilegio y REVOKE lo retira (5 ejemplos). Respuesta DAC / MAC 
 ### Actividad 2 — Roles corporativos
 
 ```
-admin_bd ──▶ rol_admin ─────▶ ALL PRIVILEGES ON Guia_3.* WITH GRANT OPTION
+admin_bd ──▶ rol_admin ─────▶ ALL PRIVILEGES ON Guia_4.* WITH GRANT OPTION
 analista ──▶ rol_consultor ─▶ SELECT en las 6 tablas
 operador ──▶ rol_operador ──▶ SELECT, INSERT, UPDATE en las 6 tablas
 auditor  ┄┄▶ (directo, sin rol) ┄┄▶ SELECT en auditoria_log

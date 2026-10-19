@@ -1,7 +1,7 @@
 -- 09 · Actividad 4: simular cambios y verificar que quedan en el log
 -- Parte A como root; parte B con cada usuario en una conexión nueva.
 
-USE Guia_3;
+USE Guia_4;
 
 -- ===== Parte A (root): UPDATE y DELETE sobre un estudiante de prueba =====
 DELETE FROM Estudiante WHERE IdEstudiante = 1099887766;          -- por si quedó de antes

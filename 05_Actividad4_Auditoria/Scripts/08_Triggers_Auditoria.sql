@@ -1,7 +1,7 @@
 -- 08 · Actividad 4: triggers de auditoría sobre la tabla principal (Estudiante)
 -- Ejecutar como root, después de la Actividad 2.
 
-USE Guia_3;
+USE Guia_4;
 
 -- Tabla de log pedida por la guía (ya creada en la Actividad 1; IF NOT EXISTS no la duplica)
 -- dato_anterior guarda en JSON la fila completa ANTES del cambio

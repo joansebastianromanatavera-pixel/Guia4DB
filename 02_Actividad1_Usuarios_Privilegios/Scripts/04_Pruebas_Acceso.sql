@@ -2,7 +2,7 @@
 -- Abrir una conexión NUEVA con cada usuario y ejecutar SOLO su bloque.
 -- Las líneas marcadas ERROR 1142 deben fallar: eso demuestra el permiso negado.
 
-USE Guia_3;
+USE Guia_4;
 
 -- ===== Conectado como admin_bd =====
 SELECT * FROM Estudiante;                                          -- OK
@@ -10,8 +10,8 @@ INSERT INTO Programa (IdPrograma, Facultad, NombrePrograma, Duracion)
 VALUES (999, 'Ingenieria', 'Prueba Admin', 8);                      -- OK
 DELETE FROM Programa WHERE IdPrograma = 999;                        -- OK
 SELECT * FROM auditoria_log;                                        -- OK
-GRANT INSERT ON Guia_3.Programa TO 'analista'@'localhost';          -- OK: puede delegar
-REVOKE INSERT ON Guia_3.Programa FROM 'analista'@'localhost';       -- OK: lo retira
+GRANT INSERT ON Guia_4.Programa TO 'analista'@'localhost';          -- OK: puede delegar
+REVOKE INSERT ON Guia_4.Programa FROM 'analista'@'localhost';       -- OK: lo retira
 
 -- ===== Conectado como analista =====
 SELECT * FROM Estudiante;                                          -- OK

@@ -22,7 +22,7 @@ def main():
         "host": "localhost",
         "user": db_user,
         "password": db_password,
-        "database": "Guia_3",
+        "database": "Guia_4",
         "autocommit": True
     }
 
@@ -30,7 +30,7 @@ def main():
         conn = mysql.connector.connect(**config)
         # prepared=True: el servidor compila la plantilla primero y recibe los datos después
         cursor = conn.cursor(prepared=True, dictionary=True)
-        print("\n[+] Conexión establecida con la base de datos 'Guia_3'.\n")
+        print("\n[+] Conexión establecida con la base de datos 'Guia_4'.\n")
 
         # Caso 1: el mismo ataque ' OR '1'='1 ya no expone la tabla
         print("-" * 70)

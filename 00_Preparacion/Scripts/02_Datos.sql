@@ -2,7 +2,7 @@
 -- Vacía las tablas y carga: 5 programas, 5 estudiantes, 5 profesores,
 -- 5 materias, 5 grupos y 13 matrículas.
 
-use Guia_3;
+use Guia_4;
 
 -- Se desactivan las FK solo para poder vaciar las tablas en cualquier orden
 set foreign_key_checks = 0;

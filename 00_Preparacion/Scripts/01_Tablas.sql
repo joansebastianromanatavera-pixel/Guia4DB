@@ -1,9 +1,9 @@
--- 01 · Estructura de la base Guia_3 (sistema académico de las Prácticas 1-3)
+-- 01 · Estructura de la base Guia_4 (sistema académico de las Prácticas 1-3)
 -- 6 tablas: Programa, Estudiante, Profesor, Materia, Grupo, Matricula.
 
-create database if not exists Guia_3;
+create database if not exists Guia_4;
 
-USE Guia_3;
+USE Guia_4;
 
 -- Se borran en orden inverso a las llaves foráneas (hijas primero)
 drop table if exists Matricula;

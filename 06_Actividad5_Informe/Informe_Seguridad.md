@@ -1,15 +1,15 @@
-# Actividad 5 — Informe de Seguridad del Sistema `Guia_3`
+# Actividad 5 — Informe de Seguridad del Sistema `Guia_4`
 
 **Universidad Manuela Beltrán · Bases de Datos · Guía de Laboratorio N.º 4**
 **Eje temático:** Seguridad en BD — Usuarios, Privilegios, Roles y Auditoría
-**SGBD:** MySQL 8.x · **Base de datos:** `Guia_3` (sistema académico de las Prácticas 1-3)
+**SGBD:** MySQL 8.x · **Base de datos:** `Guia_4` (sistema académico de las Prácticas 1-3)
 **Evidencia:** `06_Actividad5_Informe/Scripts/10_Mapa_Seguridad.sql`
 
 ---
 
 ## 1. Objetivo y alcance
 
-Este informe documenta el **mapa de seguridad** del sistema académico `Guia_3` tal como quedó tras las actividades 1 a 4: qué cuentas existen, qué roles agrupan sus permisos, qué puede hacer cada cuenta sobre cada tabla y qué mecanismos registran los cambios. También analiza los riesgos que siguen abiertos y propone las medidas necesarias para llevar el sistema a **producción**.
+Este informe documenta el **mapa de seguridad** del sistema académico `Guia_4` tal como quedó tras las actividades 1 a 4: qué cuentas existen, qué roles agrupan sus permisos, qué puede hacer cada cuenta sobre cada tabla y qué mecanismos registran los cambios. También analiza los riesgos que siguen abiertos y propone las medidas necesarias para llevar el sistema a **producción**.
 
 **Alcance:**
 
@@ -44,7 +44,7 @@ La protección del sistema no depende de un solo control. Se organiza en capas, 
 
 | Usuario | Host permitido | Perfil / función | Origen de sus permisos | Alcance |
 |---|---|---|---|---|
-| `admin_bd` | `localhost` | DBA: administra el esquema y delega permisos | **Heredado** de `rol_admin` | `ALL PRIVILEGES` sobre `Guia_3.*` con `GRANT OPTION` |
+| `admin_bd` | `localhost` | DBA: administra el esquema y delega permisos | **Heredado** de `rol_admin` | `ALL PRIVILEGES` sobre `Guia_4.*` con `GRANT OPTION` |
 | `analista` | `localhost` | Consulta y genera reportes; no modifica datos | **Heredado** de `rol_consultor` | `SELECT` sobre las 6 tablas de negocio |
 | `operador` | `localhost` | Registra y corrige datos del día a día; no borra | **Heredado** de `rol_operador` | `SELECT, INSERT, UPDATE` sobre las 6 tablas de negocio |
 | `auditor` | `localhost` | Revisa el rastro de cambios; independiente de la operación | **Directo** (sin rol) | `SELECT` sobre `auditoria_log` únicamente |
@@ -57,7 +57,7 @@ La protección del sistema no depende de un solo control. Se organiza en capas, 
 
 | Rol | Privilegios que agrupa | Asignado a | Activo por defecto |
 |---|---|---|:-:|
-| `rol_admin` | `ALL PRIVILEGES ON Guia_3.* WITH GRANT OPTION` | `admin_bd@localhost` | Sí |
+| `rol_admin` | `ALL PRIVILEGES ON Guia_4.* WITH GRANT OPTION` | `admin_bd@localhost` | Sí |
 | `rol_consultor` | `SELECT` sobre `Programa`, `Estudiante`, `Profesor`, `Materia`, `Grupo`, `Matricula` | `analista@localhost` | Sí |
 | `rol_operador` | `SELECT, INSERT, UPDATE` sobre las mismas 6 tablas | `operador@localhost` | Sí |
 
@@ -70,7 +70,7 @@ En MySQL 8 un rol se guarda internamente como una cuenta **bloqueada y sin contr
 ### 3.3 Diagrama de usuarios, roles y objetos
 
 ```
-  USUARIOS                 ROLES                   OBJETOS (esquema Guia_3)
+  USUARIOS                 ROLES                   OBJETOS (esquema Guia_4)
   ─────────                ─────                   ────────────────────────
 
   admin_bd@localhost ──▶ rol_admin ─────────▶ ALL PRIVILEGES + GRANT OPTION
@@ -106,7 +106,7 @@ Leyenda: **S** = SELECT · **I** = INSERT · **U** = UPDATE · **D** = DELETE ·
 
 **Decisiones de diseño:**
 
-1. **`analista` y `operador` reciben permisos tabla por tabla, nunca con `Guia_3.*`.** Un comodín de esquema incluiría `auditoria_log` sin que nadie lo notara. Así el log queda fuera del alcance de quien opera los datos.
+1. **`analista` y `operador` reciben permisos tabla por tabla, nunca con `Guia_4.*`.** Un comodín de esquema incluiría `auditoria_log` sin que nadie lo notara. Así el log queda fuera del alcance de quien opera los datos.
 2. **`operador` no tiene `DELETE`.** Un error de digitación puede corregirse con `UPDATE`, pero un borrado es irreversible y puede romper la integridad referencial (`Matricula` → `Estudiante`). Borrar queda reservado al DBA.
 3. **`auditor` no ve los datos de negocio.** Solo necesita el log para hacer su trabajo. Este es el principio de *necesidad de saber*.
 4. **`operador` puede disparar los triggers sin tener `INSERT` sobre `auditoria_log`.** El trigger se ejecuta con los permisos de su `DEFINER`, no con los del usuario que hizo el cambio. Por eso el registro de auditoría ocurre aunque el operador no pueda escribir en el log, y tampoco puede falsificarlo.
@@ -126,7 +126,7 @@ Leyenda: **S** = SELECT · **I** = INSERT · **U** = UPDATE · **D** = DELETE ·
 
 | Aspecto | Directo (`auditor`) | Heredado por rol (`analista`, `operador`, `admin_bd`) |
 |---|---|---|
-| Cómo se otorga | `GRANT SELECT ON Guia_3.auditoria_log TO 'auditor'@'localhost'` | `GRANT ... TO 'rol_consultor'` y luego `GRANT 'rol_consultor' TO 'analista'@'localhost'` |
+| Cómo se otorga | `GRANT SELECT ON Guia_4.auditoria_log TO 'auditor'@'localhost'` | `GRANT ... TO 'rol_consultor'` y luego `GRANT 'rol_consultor' TO 'analista'@'localhost'` |
 | Qué muestra `SHOW GRANTS FOR usuario` | El privilegio sobre la tabla | Solo la membresía: ``GRANT `rol_consultor`@`%` TO `analista`@`localhost` `` |
 | Cómo ver los permisos reales | `SHOW GRANTS FOR usuario` | `SHOW GRANTS FOR usuario USING 'rol_consultor'` |
 | Efecto de un `REVOKE` | Afecta solo a ese usuario | `REVOKE ... FROM 'rol_operador'` afecta **a todos** los miembros del rol al mismo tiempo |
@@ -212,7 +212,7 @@ Ejecutar `10_Mapa_Seguridad.sql` como `root` y capturar cada bloque:
 |:-:|:-:|---|
 | 5.1 | 1 | Inventario de cuentas: 4 usuarios y 3 roles (bloqueados) |
 | 5.2 | 2 | Asignación rol → usuario y roles activos por defecto |
-| 5.3 | 3 | Privilegios a nivel de esquema (solo `rol_admin` tiene `Guia_3.*`) |
+| 5.3 | 3 | Privilegios a nivel de esquema (solo `rol_admin` tiene `Guia_4.*`) |
 | 5.4 | 4 | Privilegios a nivel de tabla (matriz de la sección 3.4) |
 | 5.5 | 5 | Directo vs heredado (`SHOW GRANTS` con y sin `USING`) |
 | 5.6 | 6 | Cuentas con `GRANT OPTION` (insumo del hallazgo H2) |
@@ -231,14 +231,14 @@ Severidad: **Alta** = permite fraude, fuga masiva o pérdida de evidencia · **M
 | ID | Hallazgo | Riesgo concreto | Severidad | Estado |
 |:-:|---|---|:-:|---|
 | H1 | Contraseñas en texto plano en `03_Usuarios_Privilegios.sql` y en el README | Cualquier persona con acceso al repositorio o a la entrega obtiene las credenciales. Incumple la recomendación 11 de la guía | **Alta** | Abierto: aceptable solo en el laboratorio |
-| H2 | `admin_bd` tiene `ALL` + `GRANT OPTION` sobre `Guia_3.*`, **incluida** `auditoria_log` | El administrador puede borrar o alterar el log que registra sus propios cambios, o hacer `DROP TRIGGER`. No hay separación de funciones | **Alta** | Abierto |
+| H2 | `admin_bd` tiene `ALL` + `GRANT OPTION` sobre `Guia_4.*`, **incluida** `auditoria_log` | El administrador puede borrar o alterar el log que registra sus propios cambios, o hacer `DROP TRIGGER`. No hay separación de funciones | **Alta** | Abierto |
 | H3 | El trigger registraba `CURRENT_USER()` (el DEFINER) | Todos los eventos aparecían como `root`: la auditoría no identificaba responsables | **Alta** | **Corregido** (`USER()`) |
 | H4 | Los scripts de la Actividad 3 se conectan como `root` por defecto | Si la aplicación tuviera una inyección no detectada, el atacante tendría control total del servidor | **Alta** | Abierto |
 | H5 | La auditoría cubre solo `Estudiante`, solo `UPDATE`/`DELETE`, y no guarda el valor nuevo | Cambios en `Matricula` (notas, valores) o inserciones fraudulentas no dejan rastro. `TRUNCATE` **no dispara** triggers `DELETE` | **Media** | Abierto |
 | H6 | `analista` ve todos los datos personales: teléfono, dirección, correo, fecha de nacimiento, notas y valores | Exposición de datos personales sin necesidad de negocio (Ley 1581 de 2012) | **Media** | Abierto |
 | H7 | Sin política de contraseñas, vencimiento ni bloqueo por intentos fallidos | Las contraseñas débiles o reutilizadas son vulnerables a fuerza bruta | **Media** | Abierto |
 | H8 | No se exige conexión cifrada (TLS) | En red, las credenciales y los datos viajan en claro. Mitigado parcialmente por `@'localhost'` | **Media** | Abierto |
-| H9 | `auditoria_log` vive en el mismo esquema que los datos y no tiene política de retención | Un `ALL ON Guia_3.*` siempre lo incluirá; el log crece sin control | **Baja** | Abierto |
+| H9 | `auditoria_log` vive en el mismo esquema que los datos y no tiene política de retención | Un `ALL ON Guia_4.*` siempre lo incluirá; el log crece sin control | **Baja** | Abierto |
 | H10 | `fecha` usa `NOW()` (hora local del servidor) | Ambigüedad al correlacionar eventos entre servidores o con cambio de zona horaria | **Baja** | Abierto |
 | H11 | Las entradas no se validaban antes de consultar | Comportamiento inesperado por conversión implícita de tipos | **Baja** | **Corregido** (validación `isdigit()`) |
 
@@ -304,7 +304,7 @@ CREATE DATABASE auditoria;
 
 CREATE USER 'trg_auditoria'@'localhost' ACCOUNT LOCK;     -- nadie puede iniciar sesion con ella
 GRANT INSERT ON auditoria.auditoria_log TO 'trg_auditoria'@'localhost';
-GRANT SELECT, TRIGGER ON Guia_3.Estudiante TO 'trg_auditoria'@'localhost';
+GRANT SELECT, TRIGGER ON Guia_4.Estudiante TO 'trg_auditoria'@'localhost';
 
 -- Los triggers se recrean asi:
 -- CREATE DEFINER = 'trg_auditoria'@'localhost' TRIGGER trg_auditoria_estudiante_update ...
@@ -312,29 +312,29 @@ GRANT SELECT, TRIGGER ON Guia_3.Estudiante TO 'trg_auditoria'@'localhost';
 GRANT SELECT ON auditoria.auditoria_log TO 'auditor'@'localhost';
 ```
 
-Con esto, `admin_bd` sigue administrando `Guia_3.*` pero ya no puede tocar `auditoria.*`. Solo el auditor lee el log y solo los triggers escriben en él.
+Con esto, `admin_bd` sigue administrando `Guia_4.*` pero ya no puede tocar `auditoria.*`. Solo el auditor lee el log y solo los triggers escriben en él.
 
 **R7. Retirar `GRANT OPTION` del rol administrativo (H2).** La delegación de permisos queda en una única cuenta DBA nominal, para que cada cambio de permisos tenga un responsable identificable:
 
 ```sql
-REVOKE GRANT OPTION ON Guia_3.* FROM 'rol_admin';
+REVOKE GRANT OPTION ON Guia_4.* FROM 'rol_admin';
 ```
 
 **R8. Vistas y permisos por columna para datos personales (H6).** El analista trabaja con una vista que oculta o enmascara los datos sensibles, en lugar de la tabla base (Elmasri & Navathe, 2016, cap. 24: las vistas como mecanismo de seguridad):
 
 ```sql
-CREATE SQL SECURITY DEFINER VIEW Guia_3.vw_estudiante_consulta AS
+CREATE SQL SECURITY DEFINER VIEW Guia_4.vw_estudiante_consulta AS
 SELECT IdEstudiante,
        PrimerNombre, PrimerApellido,
        CONCAT('******', RIGHT(Telefono, 4))          AS Telefono,
        CONCAT(LEFT(CorreoEstudiante, 2), '***@***')  AS Correo
-FROM   Guia_3.Estudiante;
+FROM   Guia_4.Estudiante;
 
-REVOKE SELECT ON Guia_3.Estudiante FROM 'rol_consultor';
-GRANT  SELECT ON Guia_3.vw_estudiante_consulta TO 'rol_consultor';
+REVOKE SELECT ON Guia_4.Estudiante FROM 'rol_consultor';
+GRANT  SELECT ON Guia_4.vw_estudiante_consulta TO 'rol_consultor';
 
 -- Alternativa: privilegio por columna
-GRANT SELECT (IdEstudiante, PrimerNombre, PrimerApellido) ON Guia_3.Estudiante TO 'rol_consultor';
+GRANT SELECT (IdEstudiante, PrimerNombre, PrimerApellido) ON Guia_4.Estudiante TO 'rol_consultor';
 ```
 
 **R9. Revisión periódica de accesos.** Ejecutar el script `10_Mapa_Seguridad.sql` cada trimestre y cada vez que alguien cambie de cargo o salga de la organización. Las cuentas que ya no se usan se bloquean (`ALTER USER ... ACCOUNT LOCK`) antes de eliminarse.

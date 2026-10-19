@@ -1,8 +1,8 @@
--- 10 · Actividad 5: mapa de seguridad del sistema Guia_3
+-- 10 · Actividad 5: mapa de seguridad del sistema Guia_4
 -- Ejecutar como root al final. Solo CONSULTA el catálogo, no modifica nada.
 -- Cada bloque = una figura del informe (5.1 a 5.9).
 
-USE Guia_3;
+USE Guia_4;
 
 -- 5.1 Usuarios y roles (en MySQL 8 un rol es una cuenta bloqueada)
 SELECT  User                AS cuenta,
@@ -30,12 +30,12 @@ LEFT JOIN mysql.default_roles dr
       AND dr.DEFAULT_ROLE_USER = re.FROM_USER
 ORDER BY rol;
 
--- 5.3 Privilegios sobre todo el esquema (Guia_3.*)
+-- 5.3 Privilegios sobre todo el esquema (Guia_4.*)
 SELECT  GRANTEE         AS beneficiario,
         GROUP_CONCAT(PRIVILEGE_TYPE ORDER BY PRIVILEGE_TYPE SEPARATOR ', ') AS privilegios,
         MAX(IS_GRANTABLE) AS con_grant_option
 FROM    information_schema.SCHEMA_PRIVILEGES
-WHERE   LOWER(TABLE_SCHEMA) = 'guia_3'
+WHERE   LOWER(TABLE_SCHEMA) = 'guia_4'
 GROUP BY GRANTEE;
 
 -- 5.4 Privilegios tabla por tabla
@@ -44,7 +44,7 @@ SELECT  CONCAT(User, '@', Host) AS beneficiario,
         Table_priv              AS privilegios,
         Grantor                 AS otorgado_por
 FROM    mysql.tables_priv
-WHERE   LOWER(Db) = 'guia_3'
+WHERE   LOWER(Db) = 'guia_4'
 ORDER BY beneficiario, tabla;
 
 -- 5.5 Directo vs heredado
@@ -57,10 +57,10 @@ SHOW GRANTS FOR 'admin_bd'@'localhost' USING 'rol_admin';
 -- 5.6 Cuentas que pueden delegar permisos (GRANT OPTION): punto de riesgo
 SELECT 'global'  AS nivel, CONCAT(User,'@',Host) AS cuenta FROM mysql.user WHERE Grant_priv = 'Y'
 UNION ALL
-SELECT 'esquema', CONCAT(User,'@',Host) FROM mysql.db WHERE Grant_priv = 'Y' AND LOWER(Db) = 'guia_3'
+SELECT 'esquema', CONCAT(User,'@',Host) FROM mysql.db WHERE Grant_priv = 'Y' AND LOWER(Db) = 'guia_4'
 UNION ALL
 SELECT 'tabla', CONCAT(User,'@',Host) FROM mysql.tables_priv
- WHERE FIND_IN_SET('Grant', Table_priv) AND LOWER(Db) = 'guia_3';
+ WHERE FIND_IN_SET('Grant', Table_priv) AND LOWER(Db) = 'guia_4';
 
 -- 5.7 Triggers de auditoría instalados
 SELECT  TRIGGER_NAME        AS trigger_auditoria,
@@ -70,7 +70,7 @@ SELECT  TRIGGER_NAME        AS trigger_auditoria,
         DEFINER             AS se_ejecuta_como,
         CREATED             AS creado
 FROM    information_schema.TRIGGERS
-WHERE   LOWER(TRIGGER_SCHEMA) = 'guia_3'
+WHERE   LOWER(TRIGGER_SCHEMA) = 'guia_4'
 ORDER BY tabla_vigilada, evento;
 
 -- 5.8 Resumen del log: quién cambió qué y cuándo
