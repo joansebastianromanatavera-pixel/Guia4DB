@@ -3,7 +3,6 @@
 # Práctica 4 — Seguridad en Bases de Datos
 ### Usuarios · Privilegios · Roles · Auditoría
 
-*UMB — Teoría de Bases de Datos · Guía No. 4 · Eje temático: Seguridad en BD*
 
 </div>
 
